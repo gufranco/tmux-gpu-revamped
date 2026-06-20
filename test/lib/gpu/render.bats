@@ -1,0 +1,83 @@
+#!/usr/bin/env bats
+
+load "${BATS_TEST_DIRNAME}/../../helpers.bash"
+
+setup() {
+  setup_test_environment
+  unset _GPU_REVAMPED_RENDER_LOADED
+  source "${BATS_TEST_DIRNAME}/../../../src/lib/gpu/render.sh"
+}
+
+teardown() {
+  cleanup_test_environment
+}
+
+@test "render.sh - _gpu_level classifies by thresholds" {
+  [[ "$(_gpu_level 10 30 80)" == "low" ]]
+  [[ "$(_gpu_level 50 30 80)" == "medium" ]]
+  [[ "$(_gpu_level 90 30 80)" == "high" ]]
+}
+
+@test "render.sh - _gpu_level treats non-numeric as zero" {
+  [[ "$(_gpu_level zz 30 80)" == "low" ]]
+}
+
+@test "render.sh - _gpu_c_to_f converts and rejects junk" {
+  [[ "$(_gpu_c_to_f 60)" == "140" ]]
+  [[ -z "$(_gpu_c_to_f xx)" ]]
+}
+
+@test "render.sh - metric_value is empty on cold start" {
+  [[ -z "$(metric_value "" "@gpu_revamped_percentage_format" "%s%%")" ]]
+}
+
+@test "render.sh - metric_value formats with the default" {
+  [[ "$(metric_value 45 "@gpu_revamped_percentage_format" "%s%%")" == "45%" ]]
+}
+
+@test "render.sh - metric_value honors a custom format" {
+  set_tmux_option "@gpu_revamped_percentage_format" "G %s%%"
+  [[ "$(metric_value 45 "@gpu_revamped_percentage_format" "%s%%")" == "G 45%" ]]
+}
+
+@test "render.sh - metric_level reads thresholds from options" {
+  set_tmux_option "@gpu_revamped_high_thresh" "40"
+  [[ "$(metric_level 45 gpu_revamped 30 80)" == "high" ]]
+}
+
+@test "render.sh - metric_icon is empty on cold start" {
+  [[ -z "$(metric_icon "" gpu_revamped 30 80 a b c)" ]]
+}
+
+@test "render.sh - metric_icon picks the level default icon" {
+  [[ "$(metric_icon 50 gpu_revamped 30 80 LO MED HI)" == "MED" ]]
+  [[ "$(metric_icon 90 gpu_revamped 30 80 LO MED HI)" == "HI" ]]
+  [[ "$(metric_icon 5 gpu_revamped 30 80 LO MED HI)" == "LO" ]]
+}
+
+@test "render.sh - metric_icon honors a configured icon" {
+  set_tmux_option "@gpu_revamped_high_icon" "CUSTOM"
+  [[ "$(metric_icon 95 gpu_revamped 30 80 LO MED HI)" == "CUSTOM" ]]
+}
+
+@test "render.sh - metric_color is empty on cold start" {
+  [[ -z "$(metric_color "" gpu_revamped 30 80 fg)" ]]
+}
+
+@test "render.sh - metric_color returns the configured color" {
+  set_tmux_option "@gpu_revamped_high_fg_color" "#[fg=red]"
+  [[ "$(metric_color 95 gpu_revamped 30 80 fg)" == "#[fg=red]" ]]
+}
+
+@test "render.sh - gpu_temp_value is empty on cold start" {
+  [[ -z "$(gpu_temp_value "")" ]]
+}
+
+@test "render.sh - gpu_temp_value formats Celsius by default" {
+  [[ "$(gpu_temp_value 60)" == "60°C" ]]
+}
+
+@test "render.sh - gpu_temp_value converts to Fahrenheit" {
+  set_tmux_option "@gpu_revamped_temp_unit" "F"
+  [[ "$(gpu_temp_value 60)" == "140°F" ]]
+}
