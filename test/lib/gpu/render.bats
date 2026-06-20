@@ -69,6 +69,20 @@ teardown() {
   [[ "$(metric_color 95 gpu_revamped 30 80 fg)" == "#[fg=red]" ]]
 }
 
+@test "render.sh - gpu_render_freq is empty on cold start or zero" {
+  [[ -z "$(gpu_render_freq "")" ]]
+  [[ -z "$(gpu_render_freq 0)" ]]
+}
+
+@test "render.sh - gpu_render_freq formats with the default" {
+  [[ "$(gpu_render_freq 1398)" == "1398MHz" ]]
+}
+
+@test "render.sh - gpu_render_freq honors a custom format" {
+  set_tmux_option "@gpu_revamped_freq_format" "%s MHz"
+  [[ "$(gpu_render_freq 1398)" == "1398 MHz" ]]
+}
+
 @test "render.sh - gpu_temp_value is empty on cold start" {
   [[ -z "$(gpu_temp_value "")" ]]
 }

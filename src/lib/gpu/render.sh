@@ -63,6 +63,16 @@ metric_color() {
   get_tmux_option "@${2}_$(metric_level "${1}" "${2}" "${3}" "${4}")_${5}_color" ""
 }
 
+# gpu_render_freq RAW_MHZ -> formatted frequency, empty when zero or unset.
+gpu_render_freq() {
+  local raw="${1}"
+  [[ -z "${raw}" || "${raw}" == "0" ]] && { echo ""; return 0; }
+  local fmt
+  fmt=$(get_tmux_option "@gpu_revamped_freq_format" "%sMHz")
+  # shellcheck disable=SC2059
+  printf "${fmt}" "${raw}"
+}
+
 # gpu_temp_value RAW_CELSIUS -> formatted temperature honoring the unit option.
 gpu_temp_value() {
   local raw="${1}"
@@ -86,4 +96,5 @@ export -f metric_value
 export -f metric_level
 export -f metric_icon
 export -f metric_color
+export -f gpu_render_freq
 export -f gpu_temp_value

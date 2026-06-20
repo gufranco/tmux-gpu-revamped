@@ -29,11 +29,10 @@ gpu_max_age() {
 }
 
 gpu_refresh() {
-  local util temp gram
-  read -r util temp gram <<< "$(read_gpu)"
-  cache_set util "${util}"
-  cache_set temp "${temp}"
-  cache_set gram "${gram}"
+  cache_set util "$(read_gpu_usage)"
+  cache_set temp "$(read_gpu_temp)"
+  cache_set freq "$(read_gpu_freq)"
+  cache_set gram "$(read_gram)"
 }
 
 gpu_tick() {
@@ -59,6 +58,7 @@ main() {
     gpu_temp_icon)     metric_icon "$(cache_get temp)" "gpu_revamped_temp" 65 80 "" "" "" ;;
     gpu_temp_fg_color) metric_color "$(cache_get temp)" "gpu_revamped_temp" 65 80 fg ;;
     gpu_temp_bg_color) metric_color "$(cache_get temp)" "gpu_revamped_temp" 65 80 bg ;;
+    gpu_freq)          gpu_render_freq "$(cache_get freq)" ;;
     gram_percentage)   metric_value "$(cache_get gram)" "@gpu_revamped_gram_format" "%s%%" ;;
     gram_icon)         metric_icon "$(cache_get gram)" "gpu_revamped_gram" 50 85 "▰▱▱" "▰▰▱" "▰▰▰" ;;
     gram_fg_color)     metric_color "$(cache_get gram)" "gpu_revamped_gram" 50 85 fg ;;

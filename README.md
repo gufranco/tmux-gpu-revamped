@@ -2,15 +2,14 @@
 
 [![Tests](https://github.com/gufranco/tmux-gpu-revamped/actions/workflows/tests.yml/badge.svg)](https://github.com/gufranco/tmux-gpu-revamped/actions/workflows/tests.yml) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-NVIDIA GPU load, temperature, and memory for your tmux status bar, without ever
-blocking the status render.
+GPU load, temperature, frequency, and memory for your tmux status bar, across
+NVIDIA, AMD, Intel, and Apple Silicon, without ever blocking the status render.
 
-One `nvidia-smi` query runs in a detached background worker and writes three
-values to tmux server user-options. The status line reads them instantly. No temp
-files are used. When no NVIDIA GPU is present the placeholders render empty.
+A detached background worker probes the GPU and writes the values to tmux server
+user-options. The status line reads them instantly. No temp files are used. When
+a metric has no source on the host the matching placeholders render empty.
 
-Inspired by the GPU metrics in
-[tmux-cpu](https://github.com/tmux-plugins/tmux-cpu). Built from
+Built from
 [tmux-plugin-template](https://github.com/gufranco/tmux-plugin-template).
 
 ## Placeholders
@@ -23,6 +22,7 @@ Inspired by the GPU metrics in
 | `#{gpu_temp}` | GPU temperature, for example `60°C` |
 | `#{gpu_temp_icon}` | a tier icon for the temperature |
 | `#{gpu_temp_fg_color}` / `#{gpu_temp_bg_color}` | colors for the temperature tier |
+| `#{gpu_freq}` | GPU clock, for example `1398MHz` |
 | `#{gram_percentage}` | GPU memory used, for example `25%` |
 | `#{gram_icon}` | a tier icon for memory |
 | `#{gram_fg_color}` / `#{gram_bg_color}` | colors for the memory tier |
@@ -54,6 +54,7 @@ Press `prefix + I` to install.
 | `@gpu_revamped_temp_high_thresh` | `80` | degrees Celsius for the high tier |
 | `@gpu_revamped_temp_{low,medium,high}_icon` | empty | temperature tier icons |
 | `@gpu_revamped_temp_{low,medium,high}_{fg,bg}_color` | empty | temperature tier colors |
+| `@gpu_revamped_freq_format` | `%sMHz` | format for the GPU clock |
 | `@gpu_revamped_gram_format` | `%s%%` | format for the memory value |
 | `@gpu_revamped_gram_medium_thresh` | `50` | memory percent for the medium tier |
 | `@gpu_revamped_gram_high_thresh` | `85` | memory percent for the high tier |
@@ -63,18 +64,20 @@ Press `prefix + I` to install.
 
 ## Support by platform and architecture
 
-This plugin reports NVIDIA GPUs through `nvidia-smi`. It works on any platform
-where an NVIDIA driver and `nvidia-smi` are present, which in practice is Linux
-and Windows with a discrete NVIDIA card.
+| Setup | Load | Temperature | Frequency | Memory |
+|-------|------|-------------|-----------|--------|
+| Linux + NVIDIA (`nvidia-smi`) | yes | yes | yes | yes |
+| Linux + AMD (`rocm-smi`) | yes | yes | yes | no |
+| Linux + Intel or generic (`/sys/class/drm`) | yes | yes | yes | no |
+| macOS Apple Silicon | yes, `ioreg` | with `istats` | yes, chip table | no |
+| macOS Intel | yes, `ioreg` | with `istats` | yes, model table | no |
 
-| Setup | Supported |
-|-------|-----------|
-| Linux or Windows with an NVIDIA GPU and `nvidia-smi` | yes |
-| Apple Silicon Macs | no, there is no `nvidia-smi`; placeholders render empty |
-| Intel Macs, AMD GPUs, integrated Intel GPUs | no, not covered by `nvidia-smi` |
-
-Without `nvidia-smi` on `PATH` the plugin renders nothing and never errors, so it
-is safe to load on a machine that has no NVIDIA GPU.
+Verified on an Apple M3 Max: load reads through `ioreg` and frequency comes from a
+per-chip clock table, so the GPU placeholders are populated even though there is no
+`nvidia-smi`. GPU temperature on macOS needs `istats` (`gem install iStats`); SMC
+temperature access on Apple Silicon is limited, so the temperature placeholder may
+stay empty there. GPU memory (`gram`) is NVIDIA only. Any metric with no source on
+the host renders empty and never errors.
 
 ## License
 

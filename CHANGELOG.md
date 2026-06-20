@@ -5,6 +5,21 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0] - 2026-06-20
+
+### Added
+
+- AMD (`rocm-smi`), Intel and generic Linux (`/sys/class/drm`), and Apple Silicon
+  (`ioreg`) GPU load, so the plugin works beyond NVIDIA.
+- GPU frequency placeholder `#{gpu_freq}` with per-chip clock tables for Apple
+  Silicon and Intel Macs.
+- macOS GPU temperature via `istats`.
+
+### Changed
+
+- Each metric now probes multiple vendors and renders empty only when no source
+  exists on the host.
+
 ## [1.0.0] - 2026-06-19
 
 ### Added
