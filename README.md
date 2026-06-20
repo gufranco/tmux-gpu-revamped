@@ -1,5 +1,7 @@
 # tmux-gpu-revamped
 
+[![Tests](https://github.com/gufranco/tmux-gpu-revamped/actions/workflows/tests.yml/badge.svg)](https://github.com/gufranco/tmux-gpu-revamped/actions/workflows/tests.yml) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
 NVIDIA GPU load, temperature, and memory for your tmux status bar, without ever
 blocking the status render.
 
@@ -59,9 +61,20 @@ Press `prefix + I` to install.
 | `@gpu_revamped_gram_{low,medium,high}_{fg,bg}_color` | empty | memory tier colors |
 | `@gpu_revamped_enable_logging` | `0` | set to `1` to log under `~/.tmux/gpu-revamped-logs` |
 
-## Requirements
+## Support by platform and architecture
 
-`nvidia-smi` on `PATH`. Without it the plugin renders nothing and never errors.
+This plugin reports NVIDIA GPUs through `nvidia-smi`. It works on any platform
+where an NVIDIA driver and `nvidia-smi` are present, which in practice is Linux
+and Windows with a discrete NVIDIA card.
+
+| Setup | Supported |
+|-------|-----------|
+| Linux or Windows with an NVIDIA GPU and `nvidia-smi` | yes |
+| Apple Silicon Macs | no, there is no `nvidia-smi`; placeholders render empty |
+| Intel Macs, AMD GPUs, integrated Intel GPUs | no, not covered by `nvidia-smi` |
+
+Without `nvidia-smi` on `PATH` the plugin renders nothing and never errors, so it
+is safe to load on a machine that has no NVIDIA GPU.
 
 ## License
 
