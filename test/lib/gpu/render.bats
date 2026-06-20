@@ -95,3 +95,24 @@ teardown() {
   set_tmux_option "@gpu_revamped_temp_unit" "F"
   [[ "$(gpu_temp_value 60)" == "140°F" ]]
 }
+
+@test "render.sh - load tier color passes every tmux color spec through verbatim" {
+  for spec in '#[fg=red]' '#[fg=colour203]' '#[fg=#f38ba8]' '#[fg=#f38ba8,bg=#1e1e2e]' '#[fg=brightred]'; do
+    set_tmux_option "@gpu_revamped_high_fg_color" "${spec}"
+    [[ "$(metric_color 95 gpu_revamped 30 80 fg)" == "${spec}" ]]
+  done
+}
+
+@test "render.sh - temperature tier color passes every tmux color spec through verbatim" {
+  for spec in '#[fg=red]' '#[fg=colour203]' '#[fg=#f38ba8]' '#[fg=#f38ba8,bg=#1e1e2e]' '#[fg=brightred]'; do
+    set_tmux_option "@gpu_revamped_temp_high_fg_color" "${spec}"
+    [[ "$(metric_color 95 gpu_revamped_temp 65 80 fg)" == "${spec}" ]]
+  done
+}
+
+@test "render.sh - GPU memory tier color passes every tmux color spec through verbatim" {
+  for spec in '#[fg=red]' '#[fg=colour203]' '#[fg=#f38ba8]' '#[fg=#f38ba8,bg=#1e1e2e]' '#[fg=brightred]'; do
+    set_tmux_option "@gpu_revamped_gram_high_fg_color" "${spec}"
+    [[ "$(metric_color 95 gpu_revamped_gram 50 85 fg)" == "${spec}" ]]
+  done
+}

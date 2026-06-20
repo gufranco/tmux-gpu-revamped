@@ -75,6 +75,94 @@ Press `prefix + I` to install.
 | `@gpu_revamped_gram_{low,medium,high}_{fg,bg}_color` | empty | memory tier colors |
 | `@gpu_revamped_enable_logging` | `0` | set to `1` to log under `~/.tmux/gpu-revamped-logs` |
 
+## Theme color suggestions
+
+The defaults leave the tier colors empty, so each metric inherits its tier color from the 16 ANSI names your active theme already remaps, which matches any theme out of the box. For exact hex instead of remapped ANSI, copy one block below. Each tier maps low to green, medium to yellow, and high to red, across the load, temperature, and GPU memory families.
+
+### Catppuccin Mocha
+
+```tmux
+set -g @gpu_revamped_low_fg_color '#[fg=#a6e3a1]'
+set -g @gpu_revamped_medium_fg_color '#[fg=#f9e2af]'
+set -g @gpu_revamped_high_fg_color '#[fg=#f38ba8]'
+set -g @gpu_revamped_temp_low_fg_color '#[fg=#a6e3a1]'
+set -g @gpu_revamped_temp_medium_fg_color '#[fg=#f9e2af]'
+set -g @gpu_revamped_temp_high_fg_color '#[fg=#f38ba8]'
+set -g @gpu_revamped_gram_low_fg_color '#[fg=#a6e3a1]'
+set -g @gpu_revamped_gram_medium_fg_color '#[fg=#f9e2af]'
+set -g @gpu_revamped_gram_high_fg_color '#[fg=#f38ba8]'
+```
+
+### Dracula
+
+```tmux
+set -g @gpu_revamped_low_fg_color '#[fg=#50fa7b]'
+set -g @gpu_revamped_medium_fg_color '#[fg=#f1fa8c]'
+set -g @gpu_revamped_high_fg_color '#[fg=#ff5555]'
+set -g @gpu_revamped_temp_low_fg_color '#[fg=#50fa7b]'
+set -g @gpu_revamped_temp_medium_fg_color '#[fg=#f1fa8c]'
+set -g @gpu_revamped_temp_high_fg_color '#[fg=#ff5555]'
+set -g @gpu_revamped_gram_low_fg_color '#[fg=#50fa7b]'
+set -g @gpu_revamped_gram_medium_fg_color '#[fg=#f1fa8c]'
+set -g @gpu_revamped_gram_high_fg_color '#[fg=#ff5555]'
+```
+
+### Nord
+
+```tmux
+set -g @gpu_revamped_low_fg_color '#[fg=#a3be8c]'
+set -g @gpu_revamped_medium_fg_color '#[fg=#ebcb8b]'
+set -g @gpu_revamped_high_fg_color '#[fg=#bf616a]'
+set -g @gpu_revamped_temp_low_fg_color '#[fg=#a3be8c]'
+set -g @gpu_revamped_temp_medium_fg_color '#[fg=#ebcb8b]'
+set -g @gpu_revamped_temp_high_fg_color '#[fg=#bf616a]'
+set -g @gpu_revamped_gram_low_fg_color '#[fg=#a3be8c]'
+set -g @gpu_revamped_gram_medium_fg_color '#[fg=#ebcb8b]'
+set -g @gpu_revamped_gram_high_fg_color '#[fg=#bf616a]'
+```
+
+### Gruvbox Dark
+
+```tmux
+set -g @gpu_revamped_low_fg_color '#[fg=#b8bb26]'
+set -g @gpu_revamped_medium_fg_color '#[fg=#fabd2f]'
+set -g @gpu_revamped_high_fg_color '#[fg=#fb4934]'
+set -g @gpu_revamped_temp_low_fg_color '#[fg=#b8bb26]'
+set -g @gpu_revamped_temp_medium_fg_color '#[fg=#fabd2f]'
+set -g @gpu_revamped_temp_high_fg_color '#[fg=#fb4934]'
+set -g @gpu_revamped_gram_low_fg_color '#[fg=#b8bb26]'
+set -g @gpu_revamped_gram_medium_fg_color '#[fg=#fabd2f]'
+set -g @gpu_revamped_gram_high_fg_color '#[fg=#fb4934]'
+```
+
+### Tokyo Night
+
+```tmux
+set -g @gpu_revamped_low_fg_color '#[fg=#9ece6a]'
+set -g @gpu_revamped_medium_fg_color '#[fg=#e0af68]'
+set -g @gpu_revamped_high_fg_color '#[fg=#f7768e]'
+set -g @gpu_revamped_temp_low_fg_color '#[fg=#9ece6a]'
+set -g @gpu_revamped_temp_medium_fg_color '#[fg=#e0af68]'
+set -g @gpu_revamped_temp_high_fg_color '#[fg=#f7768e]'
+set -g @gpu_revamped_gram_low_fg_color '#[fg=#9ece6a]'
+set -g @gpu_revamped_gram_medium_fg_color '#[fg=#e0af68]'
+set -g @gpu_revamped_gram_high_fg_color '#[fg=#f7768e]'
+```
+
+### Solarized Dark
+
+```tmux
+set -g @gpu_revamped_low_fg_color '#[fg=#859900]'
+set -g @gpu_revamped_medium_fg_color '#[fg=#b58900]'
+set -g @gpu_revamped_high_fg_color '#[fg=#dc322f]'
+set -g @gpu_revamped_temp_low_fg_color '#[fg=#859900]'
+set -g @gpu_revamped_temp_medium_fg_color '#[fg=#b58900]'
+set -g @gpu_revamped_temp_high_fg_color '#[fg=#dc322f]'
+set -g @gpu_revamped_gram_low_fg_color '#[fg=#859900]'
+set -g @gpu_revamped_gram_medium_fg_color '#[fg=#b58900]'
+set -g @gpu_revamped_gram_high_fg_color '#[fg=#dc322f]'
+```
+
 ## Support by platform and architecture
 
 | Setup | Load | Temperature | Frequency | Memory |
