@@ -69,14 +69,14 @@ Press `prefix + I` to install.
 | Linux + NVIDIA (`nvidia-smi`) | yes | yes | yes | yes |
 | Linux + AMD (`rocm-smi`) | yes | yes | yes | no |
 | Linux + Intel or generic (`/sys/class/drm`) | yes | yes | yes | no |
-| macOS Apple Silicon | yes, `ioreg` | with `istats` | yes, chip table | no |
-| macOS Intel | yes, `ioreg` | with `istats` | yes, model table | no |
+| macOS Apple Silicon | yes, `ioreg` | no, see note | yes, chip table | no |
+| macOS Intel | yes, `ioreg` | no, see note | yes, model table | no |
 
 Verified on an Apple M3 Max: load reads through `ioreg` and frequency comes from a
 per-chip clock table, so the GPU placeholders are populated even though there is no
-`nvidia-smi`. GPU temperature on macOS needs `istats` (`gem install iStats`); SMC
-temperature access on Apple Silicon is limited, so the temperature placeholder may
-stay empty there. GPU memory (`gram`) is NVIDIA only. Any metric with no source on
+`nvidia-smi`. GPU temperature on macOS is not available without elevated access: istats has no
+GPU category and powermetrics needs sudo, so the macOS GPU temperature placeholder
+stays empty (validated on an Apple M3 Max). GPU temperature works on Linux. GPU memory (`gram`) is NVIDIA only. Any metric with no source on
 the host renders empty and never errors.
 
 ## License
