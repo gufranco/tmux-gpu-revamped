@@ -1,16 +1,29 @@
-# tmux-gpu-revamped
+<div align="center">
+
+<h1>tmux-gpu-revamped</h1>
+
+**GPU load, temperature, frequency, and memory for your tmux status bar.**
 
 [![Tests](https://github.com/gufranco/tmux-gpu-revamped/actions/workflows/tests.yml/badge.svg)](https://github.com/gufranco/tmux-gpu-revamped/actions/workflows/tests.yml) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-GPU load, temperature, frequency, and memory for your tmux status bar, across
-NVIDIA, AMD, Intel, and Apple Silicon, without ever blocking the status render.
+</div>
 
-A detached background worker probes the GPU and writes the values to tmux server
-user-options. The status line reads them instantly. No temp files are used. When
-a metric has no source on the host the matching placeholders render empty.
+**13** placeholders · **4** vendors · **118** tests · **95%+** coverage
 
-Built from
-[tmux-plugin-template](https://github.com/gufranco/tmux-plugin-template).
+GPU load, temperature, frequency, and memory in your tmux status line across NVIDIA, AMD, Intel, and Apple Silicon. A detached background worker probes the GPU and writes values to tmux server user-options, so the status render never blocks and no temp files are written. When a metric has no source on the host the matching placeholders render empty.
+
+Built from [tmux-plugin-template](https://github.com/gufranco/tmux-plugin-template).
+
+<table>
+<tr>
+<td><b>Non-blocking</b><br/>A detached worker probes the GPU while the status line reads cached user-options instantly.</td>
+<td><b>No temp files</b><br/>Values live in tmux server user-options, never on disk.</td>
+</tr>
+<tr>
+<td><b>Four GPU vendors</b><br/>NVIDIA, AMD, Intel, and Apple Silicon, each with its own probe path.</td>
+<td><b>Tested</b><br/>118 bats tests hold coverage above 95 percent.</td>
+</tr>
+</table>
 
 ## Placeholders
 
@@ -78,6 +91,14 @@ per-chip clock table, so the GPU placeholders are populated even though there is
 GPU category and powermetrics needs sudo, so the macOS GPU temperature placeholder
 stays empty (validated on an Apple M3 Max). GPU temperature works on Linux. GPU memory (`gram`) is NVIDIA only. Any metric with no source on
 the host renders empty and never errors.
+
+## Development
+
+```sh
+make test
+make lint
+make coverage
+```
 
 ## License
 
