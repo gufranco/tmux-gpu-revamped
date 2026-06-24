@@ -5,6 +5,15 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.1] - 2026-06-23
+
+### Changed
+
+- Reviewed the upstream `catppuccin/tmux` GPU work. The `#{gram_percentage}`
+  VRAM placeholder already ships what catppuccin only proposed in PR #588, and
+  the load, temperature, and frequency placeholders match the companion
+  `tmux-cpu-revamped` plugin. No code change needed; confirmed ahead of upstream.
+
 ## [1.1.0] - 2026-06-20
 
 ### Added
