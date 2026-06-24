@@ -4,7 +4,7 @@
 
 **GPU load, temperature, frequency, and memory for your tmux status bar.**
 
-[![Tests](https://github.com/gufranco/tmux-gpu-revamped/actions/workflows/tests.yml/badge.svg)](https://github.com/gufranco/tmux-gpu-revamped/actions/workflows/tests.yml) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE) [![Version](https://img.shields.io/badge/version-1.1.1-blue.svg)](CHANGELOG.md)
+[![Tests](https://github.com/tmux-revamped/tmux-gpu-revamped/actions/workflows/tests.yml/badge.svg)](https://github.com/tmux-revamped/tmux-gpu-revamped/actions/workflows/tests.yml) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE) [![Version](https://img.shields.io/badge/version-1.1.1-blue.svg)](CHANGELOG.md)
 
 </div>
 
@@ -12,7 +12,7 @@
 
 GPU load, temperature, frequency, and memory in your tmux status line across NVIDIA, AMD, Intel, and Apple Silicon. A detached background worker probes the GPU and writes values to tmux server user-options, so the status render never blocks and no temp files are written. When a metric has no source on the host the matching placeholders render empty.
 
-Built from [tmux-plugin-template](https://github.com/gufranco/tmux-plugin-template).
+Built from [tmux-plugin-template](https://github.com/tmux-revamped/tmux-plugin-template).
 
 <table>
 <tr>
@@ -45,7 +45,7 @@ Built from [tmux-plugin-template](https://github.com/gufranco/tmux-plugin-templa
 With [TPM](https://github.com/tmux-plugins/tpm):
 
 ```tmux
-set -g @plugin 'gufranco/tmux-gpu-revamped'
+set -g @plugin 'tmux-revamped/tmux-gpu-revamped'
 set -g status-right '#{gpu_icon} #{gpu_percentage} #{gpu_temp} #{gram_percentage}'
 ```
 
