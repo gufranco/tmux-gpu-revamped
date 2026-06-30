@@ -4,13 +4,22 @@ load "${BATS_TEST_DIRNAME}/../../helpers.bash"
 
 setup() {
   setup_test_environment
-  unset _GPU_REVAMPED_GPU_LOADED _GPU_REVAMPED_RENDER_LOADED
+  unset _GPU_REVAMPED_GPU_LOADED _GPU_REVAMPED_RENDER_LOADED \
+    _GPU_REVAMPED_HISTORY_LOADED _GPU_REVAMPED_POPUP_LOADED
   export CACHE_SYNC=1
   source "${BATS_TEST_DIRNAME}/../../../src/gpu.sh"
   read_gpu_usage() { echo "45"; }
   read_gpu_temp() { echo "60"; }
   read_gpu_freq() { echo "1398"; }
-  read_gram() { echo "25"; }
+  read_vram() { echo "2048 8192"; }
+  read_power() { echo "120"; }
+  read_power_pct() { echo "48"; }
+  read_fan() { echo "33"; }
+  read_gpu_enc() { echo "12"; }
+  read_gpu_dec() { echo "7"; }
+  read_gpu_throttle() { echo "thermal"; }
+  read_gpu_pstate() { echo "P2"; }
+  read_gpu_top_process() { echo "python"; }
 }
 
 teardown() {
@@ -109,4 +118,110 @@ teardown() {
 @test "gpu.sh dispatcher - unknown subcommand produces no output" {
   run main bogus
   [[ -z "${output}" ]]
+}
+
+@test "gpu.sh dispatcher - extended functions are defined" {
+  function_exists gpu_history_push
+  function_exists gpu_history_size
+  function_exists gpu_graph
+  function_exists gpu_popup
+  function_exists gpu_doctor
+}
+
+@test "gpu.sh dispatcher - gpu_refresh caches the extended metrics" {
+  gpu_refresh
+  [[ "$(cache_get gram_used)" == "2048" ]]
+  [[ "$(cache_get gram_total)" == "8192" ]]
+  [[ "$(cache_get power)" == "120" ]]
+  [[ "$(cache_get power_pct)" == "48" ]]
+  [[ "$(cache_get fan)" == "33" ]]
+  [[ "$(cache_get enc)" == "12" ]]
+  [[ "$(cache_get dec)" == "7" ]]
+  [[ "$(cache_get throttle)" == "thermal" ]]
+  [[ "$(cache_get pstate)" == "P2" ]]
+  [[ "$(cache_get top_process)" == "python" ]]
+}
+
+@test "gpu.sh dispatcher - gpu_refresh records util history" {
+  gpu_refresh
+  [[ "$(get_tmux_option "@gpu_revamped_util_history" "")" == "45" ]]
+  gpu_refresh
+  [[ "$(get_tmux_option "@gpu_revamped_util_history" "")" == "45 45" ]]
+}
+
+@test "gpu.sh dispatcher - history honors a custom size" {
+  set_tmux_option "@gpu_revamped_history_size" "2"
+  gpu_history_push 1
+  gpu_history_push 2
+  gpu_history_push 3
+  [[ "$(get_tmux_option "@gpu_revamped_util_history" "")" == "2 3" ]]
+}
+
+@test "gpu.sh dispatcher - gpu_history_push ignores non-numeric input" {
+  gpu_history_push "x"
+  [[ -z "$(get_tmux_option "@gpu_revamped_util_history" "")" ]]
+}
+
+@test "gpu.sh dispatcher - gpu_graph renders the history sparkline" {
+  cache_set util 50
+  set_tmux_option "@gpu_revamped_util_history" "0 50 100"
+  run main gpu_graph
+  [[ "${output}" == "▁▄█" ]]
+}
+
+@test "gpu.sh dispatcher - gram_used renders the absolute memory" {
+  run main gram_used
+  [[ "${output}" == "2.0G / 8.0G" ]]
+}
+
+@test "gpu.sh dispatcher - gpu_power renders watts" {
+  run main gpu_power
+  [[ "${output}" == "120W" ]]
+}
+
+@test "gpu.sh dispatcher - gpu_power_pct renders percent" {
+  run main gpu_power_pct
+  [[ "${output}" == "48%" ]]
+}
+
+@test "gpu.sh dispatcher - gpu_fan renders percent" {
+  run main gpu_fan
+  [[ "${output}" == "33%" ]]
+}
+
+@test "gpu.sh dispatcher - gpu_enc and gpu_dec render percent" {
+  run main gpu_enc
+  [[ "${output}" == "12%" ]]
+  run main gpu_dec
+  [[ "${output}" == "7%" ]]
+}
+
+@test "gpu.sh dispatcher - gpu_throttle renders the reason" {
+  run main gpu_throttle
+  [[ "${output}" == "thermal" ]]
+}
+
+@test "gpu.sh dispatcher - gpu_pstate renders the state" {
+  run main gpu_pstate
+  [[ "${output}" == "P2" ]]
+}
+
+@test "gpu.sh dispatcher - gpu_top_process renders the app" {
+  run main gpu_top_process
+  [[ "${output}" == "python" ]]
+}
+
+@test "gpu.sh dispatcher - popup subcommand drives the seam without launching" {
+  has_command() { [[ "$1" == "nvtop" ]]; }
+  _tmux() { echo "TMUX $*"; }
+  run main popup
+  [[ "${output}" == *"display-popup"* ]]
+  [[ "${output}" == *"nvtop"* ]]
+}
+
+@test "gpu.sh dispatcher - doctor subcommand prints the report" {
+  has_command() { return 1; }
+  _drm_present() { return 1; }
+  run main doctor
+  [[ "${output}" == *"tmux-gpu-revamped doctor"* ]]
 }

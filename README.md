@@ -4,11 +4,11 @@
 
 **GPU load, temperature, frequency, and memory for your tmux status bar.**
 
-[![Tests](https://github.com/tmux-revamped/tmux-gpu-revamped/actions/workflows/tests.yml/badge.svg)](https://github.com/tmux-revamped/tmux-gpu-revamped/actions/workflows/tests.yml) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE) [![Version](https://img.shields.io/badge/version-1.1.1-blue.svg)](CHANGELOG.md)
+[![Tests](https://github.com/tmux-revamped/tmux-gpu-revamped/actions/workflows/tests.yml/badge.svg)](https://github.com/tmux-revamped/tmux-gpu-revamped/actions/workflows/tests.yml) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE) [![Version](https://img.shields.io/badge/version-1.2.0-blue.svg)](CHANGELOG.md)
 
 </div>
 
-**13** placeholders · **4** vendors · **118** tests · **95%+** coverage
+**23** placeholders · **4** vendors · **193** tests · **95%+** coverage
 
 GPU load, temperature, frequency, and memory in your tmux status line across NVIDIA, AMD, Intel, and Apple Silicon. A detached background worker probes the GPU and writes values to tmux server user-options, so the status render never blocks and no temp files are written. When a metric has no source on the host the matching placeholders render empty.
 
@@ -21,7 +21,7 @@ Built from [tmux-plugin-template](https://github.com/tmux-revamped/tmux-plugin-t
 </tr>
 <tr>
 <td><b>Four GPU vendors</b><br/>NVIDIA, AMD, Intel, and Apple Silicon, each with its own probe path.</td>
-<td><b>Tested</b><br/>118 bats tests hold coverage above 95 percent.</td>
+<td><b>Tested</b><br/>193 bats tests hold coverage above 95 percent.</td>
 </tr>
 </table>
 
@@ -36,9 +36,23 @@ Built from [tmux-plugin-template](https://github.com/tmux-revamped/tmux-plugin-t
 | `#{gpu_temp_icon}` | a tier icon for the temperature |
 | `#{gpu_temp_fg_color}` / `#{gpu_temp_bg_color}` | colors for the temperature tier |
 | `#{gpu_freq}` | GPU clock, for example `1398MHz` |
+| `#{gpu_graph}` | load history sparkline, for example `▁▃▅█` |
+| `#{gpu_power}` | power draw in watts, for example `120W` (NVIDIA, AMD) |
+| `#{gpu_power_pct}` | power draw as percent of TDP (NVIDIA) |
+| `#{gpu_fan}` | fan speed percent (NVIDIA, AMD) |
+| `#{gpu_enc}` / `#{gpu_dec}` | encoder / decoder utilization percent (NVIDIA) |
+| `#{gpu_throttle}` | active throttle reason such as `thermal` (NVIDIA) |
+| `#{gpu_pstate}` | performance state such as `P0` (NVIDIA) |
+| `#{gpu_top_process}` | top GPU compute app name (NVIDIA) |
 | `#{gram_percentage}` | GPU memory used, for example `25%` |
 | `#{gram_icon}` | a tier icon for memory |
 | `#{gram_fg_color}` / `#{gram_bg_color}` | colors for the memory tier |
+| `#{gram_used}` | absolute VRAM, for example `18G / 24G` |
+
+Power and fan come from NVIDIA and AMD. Encoder, decoder, throttle reason,
+performance state, and top process are NVIDIA-only and render empty on other
+vendors. Apple Silicon GPU temperature needs root, so `#{gpu_temp}` is empty
+there. Run `src/gpu.sh doctor` to see which probes were detected on the host.
 
 ## Install
 
@@ -73,6 +87,18 @@ Press `prefix + I` to install.
 | `@gpu_revamped_gram_high_thresh` | `85` | memory percent for the high tier |
 | `@gpu_revamped_gram_{low,medium,high}_icon` | `▰▱▱`, `▰▰▱`, `▰▰▰` | memory tier icons |
 | `@gpu_revamped_gram_{low,medium,high}_{fg,bg}_color` | empty | memory tier colors |
+| `@gpu_revamped_gram_abs_format` | `%s / %s` | format for `#{gram_used}` |
+| `@gpu_revamped_power_format` | `%sW` | format for the power draw |
+| `@gpu_revamped_power_pct_format` | `%s%%` | format for power as percent of TDP |
+| `@gpu_revamped_fan_format` | `%s%%` | format for the fan speed |
+| `@gpu_revamped_enc_format` / `@gpu_revamped_dec_format` | `%s%%` | format for encoder / decoder use |
+| `@gpu_revamped_throttle_format` | `%s` | format for the throttle reason |
+| `@gpu_revamped_pstate_format` | `%s` | format for the performance state |
+| `@gpu_revamped_top_process_format` | `%s` | format for the top compute app |
+| `@gpu_revamped_history_size` | `20` | samples kept for `#{gpu_graph}` |
+| `@gpu_revamped_popup_key` | empty | prefix key that opens the GPU detail popup |
+| `@gpu_revamped_popup_command` | auto | command run in the popup (nvtop, vendor smi, or btop) |
+| `@gpu_revamped_popup_width` / `@gpu_revamped_popup_height` | `80%` | popup size |
 | `@gpu_revamped_enable_logging` | `0` | set to `1` to log under `~/.tmux/gpu-revamped-logs` |
 
 ## Theme color suggestions

@@ -3,7 +3,8 @@
 # gpu-revamped.tmux: TPM entry point.
 #
 # Replaces the #{gpu_*} and #{gram_*} placeholders in status-left and
-# status-right with calls to the dispatcher, which reads cached values.
+# status-right with calls to the dispatcher, which reads cached values, and binds
+# the detail-popup key when the user opts in.
 
 PLUGIN_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 GPU_CMD="${PLUGIN_DIR}/src/gpu.sh"
@@ -13,15 +14,25 @@ placeholders=(
   "\#{gpu_icon}"
   "\#{gpu_fg_color}"
   "\#{gpu_bg_color}"
+  "\#{gpu_graph}"
   "\#{gpu_temp}"
   "\#{gpu_temp_icon}"
   "\#{gpu_temp_fg_color}"
   "\#{gpu_temp_bg_color}"
   "\#{gpu_freq}"
+  "\#{gpu_power}"
+  "\#{gpu_power_pct}"
+  "\#{gpu_fan}"
+  "\#{gpu_enc}"
+  "\#{gpu_dec}"
+  "\#{gpu_throttle}"
+  "\#{gpu_pstate}"
+  "\#{gpu_top_process}"
   "\#{gram_percentage}"
   "\#{gram_icon}"
   "\#{gram_fg_color}"
   "\#{gram_bg_color}"
+  "\#{gram_used}"
 )
 
 commands=(
@@ -29,15 +40,25 @@ commands=(
   "#(${GPU_CMD} gpu_icon)"
   "#(${GPU_CMD} gpu_fg_color)"
   "#(${GPU_CMD} gpu_bg_color)"
+  "#(${GPU_CMD} gpu_graph)"
   "#(${GPU_CMD} gpu_temp)"
   "#(${GPU_CMD} gpu_temp_icon)"
   "#(${GPU_CMD} gpu_temp_fg_color)"
   "#(${GPU_CMD} gpu_temp_bg_color)"
   "#(${GPU_CMD} gpu_freq)"
+  "#(${GPU_CMD} gpu_power)"
+  "#(${GPU_CMD} gpu_power_pct)"
+  "#(${GPU_CMD} gpu_fan)"
+  "#(${GPU_CMD} gpu_enc)"
+  "#(${GPU_CMD} gpu_dec)"
+  "#(${GPU_CMD} gpu_throttle)"
+  "#(${GPU_CMD} gpu_pstate)"
+  "#(${GPU_CMD} gpu_top_process)"
   "#(${GPU_CMD} gram_percentage)"
   "#(${GPU_CMD} gram_icon)"
   "#(${GPU_CMD} gram_fg_color)"
   "#(${GPU_CMD} gram_bg_color)"
+  "#(${GPU_CMD} gram_used)"
 )
 
 interpolate() {
@@ -56,7 +77,15 @@ update_option() {
   tmux set-option -gq "${option}" "$(interpolate "${current}")"
 }
 
+bind_popup_key() {
+  local key
+  key=$(tmux show-option -gqv "@gpu_revamped_popup_key")
+  [[ -z "${key}" ]] && return 0
+  tmux bind-key "${key}" run-shell "${GPU_CMD} popup"
+}
+
 chmod +x "${GPU_CMD}" 2>/dev/null || true
 
 update_option "status-left"
 update_option "status-right"
+bind_popup_key

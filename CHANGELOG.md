@@ -5,6 +5,25 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.0] - 2026-06-29
+
+### Added
+
+- Cross-vendor VRAM: `#{gram_percentage}` and the new `#{gram_used}` absolute
+  figure now populate on AMD (`rocm-smi`), Intel and generic Linux
+  (`/sys/class/drm`), and Apple Silicon (`ioreg`), not only NVIDIA.
+- History sparkline `#{gpu_graph}`, a bounded ring buffer kept in a tmux
+  user-option with no temp file.
+- Power draw `#{gpu_power}` and percent of TDP `#{gpu_power_pct}` on NVIDIA and
+  AMD; fan speed `#{gpu_fan}` on NVIDIA and AMD.
+- NVIDIA-only metrics that render empty on other vendors: encoder
+  `#{gpu_enc}`, decoder `#{gpu_dec}`, throttle reason `#{gpu_throttle}`,
+  performance state `#{gpu_pstate}`, and top compute app `#{gpu_top_process}`.
+- Detail popup bound to `@gpu_revamped_popup_key`, opening nvtop, a vendor smi,
+  or btop through `display-popup`.
+- `doctor` subcommand reporting detected probes and why a token is empty,
+  including the Apple Silicon temperature note.
+
 ## [1.1.1] - 2026-06-23
 
 ### Changed

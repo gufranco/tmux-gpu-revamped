@@ -90,6 +90,22 @@ gpu_temp_value() {
   printf "${fmt}" "${value}"
 }
 
+# _mib_to_human MIB -> a GiB string like "8.0G" or "24G", empty for junk.
+_mib_to_human() {
+  [[ "${1}" =~ ^[0-9]+$ ]] || { echo ""; return 0; }
+  awk -v m="${1}" 'BEGIN { g = m / 1024; if (g >= 10) printf "%.0fG", g; else printf "%.1fG", g }'
+}
+
+# gram_abs_value USED_MIB TOTAL_MIB -> "18G / 24G", empty when either is unset.
+gram_abs_value() {
+  local used="${1}" total="${2}"
+  [[ "${used}" =~ ^[0-9]+$ && "${total}" =~ ^[0-9]+$ && "${total}" -gt 0 ]] || { echo ""; return 0; }
+  local fmt
+  fmt=$(get_tmux_option "@gpu_revamped_gram_abs_format" "%s / %s")
+  # shellcheck disable=SC2059
+  printf "${fmt}" "$(_mib_to_human "${used}")" "$(_mib_to_human "${total}")"
+}
+
 export -f _gpu_level
 export -f _gpu_c_to_f
 export -f metric_value
@@ -98,3 +114,5 @@ export -f metric_icon
 export -f metric_color
 export -f gpu_render_freq
 export -f gpu_temp_value
+export -f _mib_to_human
+export -f gram_abs_value

@@ -116,3 +116,25 @@ teardown() {
     [[ "$(metric_color 95 gpu_revamped_gram 50 85 fg)" == "${spec}" ]]
   done
 }
+
+@test "render.sh - _mib_to_human formats GiB" {
+  [[ "$(_mib_to_human 2048)" == "2.0G" ]]
+  [[ "$(_mib_to_human 24576)" == "24G" ]]
+  [[ -z "$(_mib_to_human xx)" ]]
+}
+
+@test "render.sh - gram_abs_value renders used and total" {
+  [[ "$(gram_abs_value 18432 24576)" == "18G / 24G" ]]
+  [[ "$(gram_abs_value 2048 8192)" == "2.0G / 8.0G" ]]
+}
+
+@test "render.sh - gram_abs_value is empty when unset or zero" {
+  [[ -z "$(gram_abs_value '' 8192)" ]]
+  [[ -z "$(gram_abs_value 2048 0)" ]]
+  [[ -z "$(gram_abs_value xx 8192)" ]]
+}
+
+@test "render.sh - gram_abs_value honors a custom format" {
+  set_tmux_option "@gpu_revamped_gram_abs_format" "%s of %s"
+  [[ "$(gram_abs_value 24576 49152)" == "24G of 48G" ]]
+}
